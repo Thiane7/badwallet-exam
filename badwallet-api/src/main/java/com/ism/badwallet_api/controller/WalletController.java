@@ -37,4 +37,10 @@ public class WalletController {
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(walletService.getAllWallets(PageRequest.of(page, size)));
     }
+    // 1.4 Consulter un portefeuille par numéro de téléphone
+    @GetMapping("/{phoneNumber}")
+    public ResponseEntity<Wallet> getWalletByPhone(@PathVariable String phoneNumber) {
+        return ResponseEntity.ok(walletService.getWalletByPhone(phoneNumber));
+    }
+
 }
