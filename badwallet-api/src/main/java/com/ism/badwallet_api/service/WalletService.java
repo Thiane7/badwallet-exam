@@ -6,9 +6,11 @@ import com.ism.badwallet_api.model.Wallet;
 import com.ism.badwallet_api.repository.TransactionRepository;
 import com.ism.badwallet_api.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Random;
 
@@ -18,6 +20,10 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final WebClient.Builder webClientBuilder;
+
+    @Value("${payment.service.url}")
+    private String paymentServiceUrl;
 
     public String seed(int numWallets, int eventsPerWallet) {
         Random random = new Random();
@@ -121,5 +127,32 @@ public class WalletService {
     public List<Transaction> getTransactions(String phoneNumber) {
         return transactionRepository
                 .findBySenderPhoneOrReceiverPhoneOrderByCreatedAtDesc(phoneNumber, phoneNumber);
+    }
+
+    public String payFactureDuMois(String phoneNumber, String serviceName, Double amount) {
+        Wallet wallet = getWalletByPhone(phoneNumber);
+        if (wallet.getBalance() < amount) {
+            throw new RuntimeException("Solde insuffisant");
+        }
+        wallet.setBalance(wallet.getBalance() - amount);
+        walletRepository.save(wallet);
+
+        webClientBuilder.build()
+            .post()
+            .uri(paymentServiceUrl + "/api/factures/" + wallet.getCode() + "/payer-mois?unite=" + serviceName)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+
+        Transaction t = new Transaction();
+        t.setType("PAYMENT");
+        t.setAmount(amount);
+        t.setFees(0.0);
+        t.setDescription("Paiement facture " + serviceName);
+        t.setSenderPhone(phoneNumber);
+        t.setWallet(wallet);
+        transactionRepository.save(t);
+
+        return "Paiement de " + amount + " XOF effectué pour " + serviceName;
     }
 }

@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ism.badwallet_api.dto.DepositRequest;
+import com.ism.badwallet_api.dto.PayRequest;
 import com.ism.badwallet_api.dto.TransferRequest;
-
+import com.ism.badwallet_api.dto.PayRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -75,6 +76,15 @@ public class WalletController {
         return ResponseEntity.ok(walletService.transfer(
             request.getSenderPhone(),
             request.getReceiverPhone(),
+            request.getAmount()
+        ));
+    }
+    // 1.9 Payer une facture du mois en cours
+    @PostMapping("/pay")
+    public ResponseEntity<String> pay(@RequestBody PayRequest request) {
+        return ResponseEntity.ok(walletService.payFactureDuMois(
+            request.getPhoneNumber(),
+            request.getServiceName(),
             request.getAmount()
         ));
     }
