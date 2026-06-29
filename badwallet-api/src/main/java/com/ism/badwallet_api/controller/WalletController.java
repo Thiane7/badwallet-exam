@@ -10,6 +10,9 @@ import com.ism.badwallet_api.dto.DepositRequest;
 import com.ism.badwallet_api.dto.PayRequest;
 import com.ism.badwallet_api.dto.TransferRequest;
 import com.ism.badwallet_api.dto.PayRequest;
+
+import com.ism.badwallet_api.model.Transaction;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -99,10 +102,14 @@ public class WalletController {
         ));
     }
 
+    // 1.11 Historique des transactions
+    @GetMapping("/{phoneNumber}/transactions")
+    public ResponseEntity<List<Transaction>> getTransactions(@PathVariable String phoneNumber) {
+        return ResponseEntity.ok(walletService.getTransactions(phoneNumber));
+    }
 
 
 
 
 
-    
 }
