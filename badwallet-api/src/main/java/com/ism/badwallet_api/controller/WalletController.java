@@ -6,7 +6,7 @@ import com.ism.badwallet_api.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.ism.badwallet_api.dto.DepositRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -47,6 +47,14 @@ public class WalletController {
     @GetMapping("/{phoneNumber}/balance")
     public ResponseEntity<Double> getBalance(@PathVariable String phoneNumber) {
         return ResponseEntity.ok(walletService.getBalance(phoneNumber));
+    }
+
+    // 1.6 Effectuer un dépôt
+    @PostMapping("/{walletId}/deposit")
+    public ResponseEntity<Wallet> deposit(
+            @PathVariable Long walletId,
+            @RequestBody DepositRequest request) {
+        return ResponseEntity.ok(walletService.deposit(walletId, request.getAmount(), request.getPaymentMethod()));
     }
 
 }
