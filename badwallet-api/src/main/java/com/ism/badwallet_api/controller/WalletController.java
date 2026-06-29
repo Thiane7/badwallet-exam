@@ -43,4 +43,10 @@ public class WalletController {
         return ResponseEntity.ok(walletService.getWalletByPhone(phoneNumber));
     }
 
+    // 1.5 Consulter uniquement le solde
+    @GetMapping("/{phoneNumber}/balance")
+    public ResponseEntity<Double> getBalance(@PathVariable String phoneNumber) {
+        return ResponseEntity.ok(walletService.getBalance(phoneNumber));
+    }
+
 }
