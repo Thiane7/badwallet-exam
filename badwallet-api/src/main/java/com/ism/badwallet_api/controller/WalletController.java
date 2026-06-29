@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 @RestController
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
@@ -26,5 +29,12 @@ public class WalletController {
     @PostMapping
     public ResponseEntity<Wallet> createWallet(@RequestBody WalletRequest request) {
         return ResponseEntity.ok(walletService.createWallet(request));
+    }
+    // 1.3 Lister tous les portefeuilles (paginé)
+    @GetMapping
+    public ResponseEntity<Page<Wallet>> getAllWallets(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(walletService.getAllWallets(PageRequest.of(page, size)));
     }
 }
