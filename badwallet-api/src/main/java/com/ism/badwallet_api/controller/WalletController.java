@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ism.badwallet_api.dto.DepositRequest;
+import com.ism.badwallet_api.dto.TransferRequest;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import com.ism.badwallet_api.dto.WithdrawRequest;
+
+import com.ism.badwallet_api.dto.TransferRequest;
 
 @RestController
 @RequestMapping("/api/wallets")
@@ -63,5 +67,15 @@ public class WalletController {
     @PostMapping("/withdraw")
     public ResponseEntity<Wallet> withdraw(@RequestBody WithdrawRequest request) {
         return ResponseEntity.ok(walletService.withdraw(request.getPhoneNumber(), request.getAmount()));
+    }
+
+    // 1.8 Effectuer un transfert
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestBody TransferRequest request) {
+        return ResponseEntity.ok(walletService.transfer(
+            request.getSenderPhone(),
+            request.getReceiverPhone(),
+            request.getAmount()
+        ));
     }
 }
