@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import com.ism.badwallet_api.dto.WithdrawRequest;
 
 import com.ism.badwallet_api.dto.TransferRequest;
-
+import com.ism.badwallet_api.dto.PayFacturesRequest;
 @RestController
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
@@ -88,4 +88,21 @@ public class WalletController {
             request.getAmount()
         ));
     }
+
+    // 1.10 Payer des factures spécifiques
+    @PostMapping("/pay-factures")
+    public ResponseEntity<String> payFactures(@RequestBody PayFacturesRequest request) {
+        return ResponseEntity.ok(walletService.payFacturesSpecifiques(
+            request.getPhoneNumber(),
+            request.getServiceName(),
+            request.getFactureReferences()
+        ));
+    }
+
+
+
+
+
+
+    
 }

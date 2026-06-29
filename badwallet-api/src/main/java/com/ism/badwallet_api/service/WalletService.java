@@ -155,4 +155,27 @@ public class WalletService {
 
         return "Paiement de " + amount + " XOF effectué pour " + serviceName;
     }
+
+        public String payFacturesSpecifiques(String phoneNumber, String serviceName, List<String> references) {
+        Wallet wallet = getWalletByPhone(phoneNumber);
+
+        webClientBuilder.build()
+            .post()
+            .uri(paymentServiceUrl + "/api/factures/payer")
+            .bodyValue(references)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+
+        Transaction t = new Transaction();
+        t.setType("PAYMENT");
+        t.setAmount(0.0);
+        t.setFees(0.0);
+        t.setDescription("Paiement factures spécifiques " + serviceName);
+        t.setSenderPhone(phoneNumber);
+        t.setWallet(wallet);
+        transactionRepository.save(t);
+
+        return "Factures payées avec succès";
+    }
 }
