@@ -1,5 +1,7 @@
 package com.ism.badwallet_api.controller;
 
+import com.ism.badwallet_api.dto.WalletRequest;
+import com.ism.badwallet_api.model.Wallet;
 import com.ism.badwallet_api.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +20,11 @@ public class WalletController {
             @RequestParam int numWallets,
             @RequestParam int eventsPerWallet) {
         return ResponseEntity.ok(walletService.seed(numWallets, eventsPerWallet));
+    }
+
+    // 1.2 Créer un nouveau portefeuille
+    @PostMapping
+    public ResponseEntity<Wallet> createWallet(@RequestBody WalletRequest request) {
+        return ResponseEntity.ok(walletService.createWallet(request));
     }
 }
