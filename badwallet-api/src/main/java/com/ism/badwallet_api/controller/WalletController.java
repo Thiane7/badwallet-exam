@@ -10,6 +10,8 @@ import com.ism.badwallet_api.dto.DepositRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import com.ism.badwallet_api.dto.WithdrawRequest;
+
 @RestController
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
@@ -57,4 +59,9 @@ public class WalletController {
         return ResponseEntity.ok(walletService.deposit(walletId, request.getAmount(), request.getPaymentMethod()));
     }
 
+    // 1.7 Effectuer un retrait
+    @PostMapping("/withdraw")
+    public ResponseEntity<Wallet> withdraw(@RequestBody WithdrawRequest request) {
+        return ResponseEntity.ok(walletService.withdraw(request.getPhoneNumber(), request.getAmount()));
+    }
 }
